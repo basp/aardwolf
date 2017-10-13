@@ -27,7 +27,7 @@ Below is an overview of the various commands that are currently supported as wel
 * `lrmarea <area_name>` removes a known area
 
 ## Behavior
-Whenever you enter a new area the mapper will assume the first room to be at coordinates `x, y, z = 0, 0, 0`. The mapper will automatically create areas and rooms. However, it does not automatically try to position (e.g. assign coordinates to) rooms. This means that (for now) all the new rooms will be created at `0 0 0` position.
+Whenever you enter a new area the mapper will assume the first room to be at coordinates `x, y, z = 0, 0, 0`. The mapper will automatically create areas and rooms. However, it does not automatically try to position (e.g. assign coordinates to) rooms so (for now) all the new rooms will be created at `0 0 0` position.
 
 This means that if you run around with the mapper active, your map will be nonsense unless you use some of the commands. Your best friends will be `lautocoords` and `lautoexits` and these will cover most of your mapping cases.
 
