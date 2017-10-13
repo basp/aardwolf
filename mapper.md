@@ -51,6 +51,9 @@ The auto-mapping features work on cardinal directions. The known cardinal direct
 3. Now that you moved one room you can use `lautocoords` to set your current room's coordinates based on the previous room and your movement. You should see your map update.
 4. The mapper only creates so-called *exit stubs* to indicate any unmapped exits on the map. To create all known exits based on GMCP data you can use the `lautoexits` command.
 5. Now you'll probably have some one-way exits on the map. To fix them you can return to the previous room and just run `lautoexits` again.
+6. Rinse and repeat, mapping all easy cardinal exits. If you run into custom exits or maze-like rooms that you need to reposition you can always use the `lcoords` and `lexit` commands to tweak your map.
+7. For really akward rooms you can just re-position them (if the map is divided) to some random far off position like `-20, -20` and continue mapping from there.
+8. You can always re-map. Just use `lcoord <x> <y> <z>` to reposition your room and continue mapping from there using the `lautocoords` command. Exits will usually clean up automatically.
 
 ## Mapping tips
 * I use mostly numpad to run around and have the keys macrod in Mudlet, this means my commands are not echoed on the command line.
