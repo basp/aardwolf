@@ -12,6 +12,10 @@ The rest of this file will explain the various commands in more detail.
 ## Overview
 Below is an overview of the various commands that are currently supported as well as examples on how to use them.
 
+### Smart
+* `lautocoords` sets the current room's coordinates based on the previous room's coordinates and the last movement.
+* `lautoexits` sets the current room's exits based on GMCP data.
+
 ### Tweaking
 * `lareas` lists all areas known to the mapper
 * `lcoords` lists the current room's coordinates
@@ -21,10 +25,6 @@ Below is an overview of the various commands that are currently supported as wel
 * `lstubs` lists all the current room's exit stubs
 * `lrmexits` removes all the current room's exits
 * `lrmarea <area_name>` removes a known area
-
-### Smart
-* `lautocoords` sets the current room's coordinates based on the previous room's coordinates and the last movement.
-* `lautoexits` sets the current room's exits based on GMCP data.
 
 ## Behavior
 Whenever you enter a new area the mapper will assume the first room to be at coordinates `x, y, z = 0, 0, 0`. The mapper will automatically create areas and rooms. However, it does not automatically try to position (e.g. assign coordinates) to rooms. This means that (for now) all the new rooms will be created at `0 0 0` position.
