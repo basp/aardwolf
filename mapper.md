@@ -1,5 +1,5 @@
 # Laly's Mapper
-This is a no-nonsense mapping script for **Aardwolf** and **Mudlet** although it probably is suitable for any MUD that offers `GMCP` room data.
+This is a no-nonsense mapping script for **Aardwolf** and **Mudlet** although it probably can be tweaked for any MUD that involves cardinal directions.
 
 The main point of this mapping script is that it's extremely user friendly. Up to the point where it stops to be user friendly actually. The mapper's main focus is on **Aardwolf** and because of the complications we cannot try to be too smart. That's why this mapper offers two things:
 
