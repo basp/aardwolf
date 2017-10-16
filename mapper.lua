@@ -78,8 +78,9 @@ local function create_aliases()
             pattern = [[]],
             command = [[]],
         }
-    } 
+    }
 end
 
-local function capture_move_command()
+local function capture_move_command(dir)
+    dir = string.lower(dir)
 end
