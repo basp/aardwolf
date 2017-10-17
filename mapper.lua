@@ -1,6 +1,7 @@
 -- https://forums.mudlet.org/mudlet-mapper-f13/generic-mapping-script-t6105.html
 
 laly = laly or {}
+laly.map = laly.map or {}
 
 laly.LOG_LEVELS = {
     DEBUG = {
@@ -30,12 +31,10 @@ laly.LOG_LEVELS = {
     }, 
 }
 
-laly.map = laly.map or {}
-
 function laly:log(level, msg)
     local name = level.name
     local color = level.color
-    cecho("\n<dark_slate_grey>[ <"..color..">("..name.."): <light_grey>"..msg.." <dark_slate_grey>]\n")    
+    cecho("\n<dark_slate_grey>[ <"..color..">("..name.."): <reset>"..msg.." <dark_slate_grey>]\n")    
 end
 
 function laly:info(msg)
@@ -59,12 +58,15 @@ function laly:fatal(msg)
 end
 
 function laly.map:create_room()
+    -- TODO
 end
 
 function laly.map:shift_room(direction)
+    -- TODO
 end
 
 function laly.map:move_room(x, y, z)
+    -- TODO
 end
 
 function laly.map:auto_map(things)
@@ -79,9 +81,11 @@ function laly.map:auto_map(things)
 end
 
 local function auto_map_exits()
+    -- TODO
 end
 
 local function auto_map_position()
+    -- TODO
 end
 
 local exitmap = {
@@ -121,26 +125,6 @@ local function create_aliases()
     laly.map.aliases = laly.map.aliases or {}
     local id
     local tbl = {
-        -- ["save map"] = {
-        --     help = [[
-        --     Saves the map to a file.
-        --     ]],
-        --     pattern = [[^map save (.+)$]],
-        --     command = [[
-        --     local filename = matches[2]
-        --     laly.map:save(filename)
-        --     ]],
-        -- },
-        -- ["load map"] = {
-        --     help = [[
-        --     Loads the map from a file.
-        --     ]],
-        --     pattern = [[^map load (.+)]],
-        --     command = [[
-        --     local filename = matches[2]
-        --     laly.map:load(filename)
-        --     ]],
-        -- },
         ["log"] = {
             help = [[
             Logs some output using the logging infrastructure, useful
@@ -201,7 +185,57 @@ local function create_aliases()
             pattern = [[^map reset!$]],
             command = [[
             laly.map:delete_area()
-            ]]
-        }
+            ]],
+        },
     }
 end
+
+function laly.map:onDirectedMove()
+    laly:debug("Directed move event")
+end
+
+function laly.map:onRandomMove()
+    laly:debug("Random move event")
+end
+
+function laly.map:onForcedMove()
+    laly:debug("Forced move event")
+end
+
+function laly.map:onRoomData()
+    laly:debug("Room data event")
+end
+
+local function kill_event_handlers()
+    laly.map.handlers = laly.map.handlers or {}
+    for event, id in pairs(laly.map.handlers) do
+        laly:debug("Killing existing <white>"..event.."<reset> handler")
+        killAnonymousEventHandler(id) 
+    end    
+end
+
+local function create_event_handlers()
+    laly.map.handlers = laly.map.handlers or {}
+    local defs = {
+        onDirectedMove = [[laly.map:onDirectedMove]],
+        onRandomMove = [[laly.map:onRandomMove]],
+        onForcedMove = [[laly.map:onForcedMove]],
+        -- Internal event that will raise one of the above.
+        ["gmcp.room.info"] = [[laly.map:onRoomData]],
+    }
+    for event, command in pairs(defs) do 
+        laly:debug("Registering new <white>"..event.."<reset> handler")
+        laly.map.handlers[event] = registerAnonymousEventHandler(event, command)
+    end
+end
+
+local function init()
+    laly:debug("Killing existing handlers...")
+    kill_event_handlers()
+    
+    laly:debug("Creating new handlers...")
+    create_event_handlers()
+end
+
+laly:debug("Initializing Laly...")
+init()
