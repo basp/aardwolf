@@ -2,8 +2,87 @@
 
 laly = laly or {}
 
+laly.LOG_LEVELS = {
+    DEBUG = {
+        level = 1,
+        name = "debug",
+        color = "dark_orchid",
+    },
+    INFO = {
+        level = 2,
+        name = "info",
+        color = "light_slate_grey",
+    },
+    WARN = {
+        level = 3,
+        name = "warn",
+        color = "orange",
+    },
+    ERROR = { 
+        level = 4,
+        name = "error",
+        color = "firebrick",
+    },
+    FATAL = {
+        level = 5,
+        name = "fatal",
+        color = "firebrick",
+    }, 
+}
+
 laly.map = laly.map or {}
-laly.log = laly.log or {}
+
+function laly:log(level, msg)
+    local name = level.name
+    local color = level.color
+    cecho("\n<dark_slate_grey>[ <"..color..">("..name.."): <light_grey>"..msg.." <dark_slate_grey>]\n")    
+end
+
+function laly:info(msg)
+    laly:log(laly.LOG_LEVELS.INFO, msg)
+end
+
+function laly:debug(msg)
+    laly:log(laly.LOG_LEVELS.DEBUG, msg)
+end
+
+function laly:warn(msg)
+    laly:log(laly.LOG_LEVELS.WARN, msg)
+end
+
+function laly:error(msg)
+    laly:log(laly.LOG_LEVELS.ERROR, msg)
+end
+
+function laly:fatal(msg)
+    laly.log(laly.LOG_LEVELS.INFO, msg)
+end
+
+function laly.map:create_room()
+end
+
+function laly.map:shift_room(direction)
+end
+
+function laly.map:move_room(x, y, z)
+end
+
+function laly.map:auto_map(things)
+    if things == "exits" then
+        auto_map_exits()
+    elseif things == "pos" then
+        auto_map_position()
+    elseif things == "all" then
+        auto_map_exits()
+        auto_map_position()
+    end
+end
+
+local function auto_map_exits()
+end
+
+local function auto_map_position()
+end
 
 local exitmap = {
     n = "north",        ne = "northeast",   nw = "northwest",   e = "east",         
@@ -39,48 +118,90 @@ local reverse_dirs = {
 }
 
 local function create_aliases()
-    laly.aliases = laly.aliases or {}
+    laly.map.aliases = laly.map.aliases or {}
     local id
     local tbl = {
-        ["start mapping"] = {
+        -- ["save map"] = {
+        --     help = [[
+        --     Saves the map to a file.
+        --     ]],
+        --     pattern = [[^map save (.+)$]],
+        --     command = [[
+        --     local filename = matches[2]
+        --     laly.map:save(filename)
+        --     ]],
+        -- },
+        -- ["load map"] = {
+        --     help = [[
+        --     Loads the map from a file.
+        --     ]],
+        --     pattern = [[^map load (.+)]],
+        --     command = [[
+        --     local filename = matches[2]
+        --     laly.map:load(filename)
+        --     ]],
+        -- },
+        ["log"] = {
             help = [[
+            Logs some output using the logging infrastructure, useful
+            for testing out new logging formats and styles.
             ]],
-            pattern = [[]],
-            command = [[laly.map.start_mapping(matches[2])]],
+            pattern = [[^log (debug|info|warn|error|fatal) (.+)$]],
+            command = [[
+            local level = matches[2]
+            local msg = matches[3]
+            laly:log(level, msg)
+            ]]
         },
-        ["stop mapping"] = {
+        ["create room"] = {
             help = [[
+            Creates a new room if it doesn't exist already.
             ]],
-            pattern = [[]],
-            command = [[]],
+            pattern = [[^map create$]],
+            command = [[
+            laly.map:create_room()
+            ]],
         },
-        ["save map"] = {
+        ["shift room"] = {
             help = [[
+            Shifts a room in one of the standard directions on the map.
             ]],
-            pattern = [[]],
-            command = [[]],
+            pattern = [[^map shift (\w)$]],
+            command = [[
+            local direction = matches[2]
+            laly.map:shift_room(direction)
+            ]],
         },
-        ["load map"] = {
+        ["move room"] = {
             help = [[
+            Moves a room to an absolute position on the map.
             ]],
-            pattern = [[]],
-            command = [[]],
+            pattern = [[^map move (-?\d+) (-?\d+) (-?\d+)$]],
+            command = [[
+            local x = tonumber(matches[2])
+            local y = tonumber(matches[3])
+            local z = tonumber(matches[4])
+            laly.map:move_room(x, y, z)
+            ]],
         },
-        ["import area"] = {
+        ["auto map"] = {
             help = [[
+            Auto map position, exits or both.
             ]],
-            pattern = [[]],
-            command = [[]],
+            pattern = [[^map auto (pos|exits|all)$]],
+            command = [[
+            local things = matches[2]
+            laly.map:auto_map(things)
+            ]]
         },
-        ["export area"] = {
+        ["reset area"] = {
             help = [[
+            Deletes the map of the current area and everything in it.
             ]],
-            pattern = [[]],
-            command = [[]],
+            pattern = [[^map reset!$]],
+            command = [[
+            laly.map:delete_area()
+            ]]
         }
     }
-end
-
-local function capture_move_command(dir)
-    dir = string.lower(dir)
 end
