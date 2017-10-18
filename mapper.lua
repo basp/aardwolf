@@ -80,6 +80,30 @@ function laly.map:auto_map(things)
     end
 end
 
+local prev_room_data = {}
+local curr_room_data = {}
+local last_command = {}
+
+function laly.map:on_directed_move(direction)
+end
+
+function laly.map:on_random_move()
+end
+
+function laly.map:on_forced_move(direction)
+end
+
+function laly.map:on_room_data()
+    if gmcp.room.info.num ~= curr_room_data.num then
+        prev_room_data = curr_room_data
+        curr_room_data = gmcp.room.info
+    end
+end
+
+function lay.map:on_sys_data_send_request(_, command)
+    last_command = command
+end 
+
 local function auto_map_exits()
     -- TODO
 end
@@ -190,20 +214,8 @@ local function create_aliases()
     }
 end
 
-function laly.map:onDirectedMove()
-    laly:debug("Directed move event")
-end
-
-function laly.map:onRandomMove()
-    laly:debug("Random move event")
-end
-
-function laly.map:onForcedMove()
-    laly:debug("Forced move event")
-end
-
-function laly.map:onRoomData()
-    laly:debug("Room data event")
+local function is_standard_direction(cmd)
+    return table.contains(exitmap, cmd)
 end
 
 local function kill_event_handlers()
@@ -214,14 +226,14 @@ local function kill_event_handlers()
     end    
 end
 
-local function create_event_handlers()
+local function register_event_handlers()
     laly.map.handlers = laly.map.handlers or {}
     local defs = {
-        onDirectedMove = [[laly.map:onDirectedMove]],
-        onRandomMove = [[laly.map:onRandomMove]],
-        onForcedMove = [[laly.map:onForcedMove]],
-        -- Internal event that will raise one of the above.
-        ["gmcp.room.info"] = [[laly.map:onRoomData]],
+        onDirectedMove = [[laly.map:on_directed_move]],
+        onRandomMove = [[laly.map:on_random_move]],
+        onForcedMove = [[laly.map:on_forced_move]],
+        ["sysDataSendRequest"] = [[laly.map:on_sys_data_send_request]],
+        ["gmcp.room.info"] = [[laly.map:on_room_data]],
     }
     for event, command in pairs(defs) do 
         laly:debug("Registering new <white>"..event.."<reset> handler")
@@ -234,8 +246,8 @@ local function init()
     kill_event_handlers()
     
     laly:debug("Creating new handlers...")
-    create_event_handlers()
+    register_event_handlers()
 end
 
-laly:debug("Initializing Laly...")
+laly:debug("Initializing...")
 init()
